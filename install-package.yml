@@ -4,13 +4,9 @@
   become: true
   tasks:
     - name: install apache
-      yum:
-        name: httpd
+      package:
+        name:
+          - "{{ apache_package }}"
+          - "{{ php_package }}"
         state: latest
-      when: ansible_distribution == "Amazon"
-    - name: install php
-      yum:
-        name: php
-        state: latest
-      when: ansible_distribution == "Amazon"
-
+        update_cache: yes
