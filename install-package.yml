@@ -3,10 +3,33 @@
 - hosts: all
   become: true
   tasks:
-    - name: install apache
-      package:
-        name:
-          - "{{ apache_package }}"
-          - "{{ php_package }}"
-        state: latest
+    - name: check updates for amazon linux
+      dnf:
         update_cache: yes
+        update_only: yes
+      when: ansible_distribution == "Amazon"
+
+    - name: check updates for ubuntu
+      apt:
+        update_cache: yes
+        update_only: yes
+      when: ansible_distribution == "Ubuntu"
+    
+- hosts: web_server
+  become: true
+  tasks:
+    - name: install apache and php for amazon linux
+      yum:
+        name:
+          - httpd
+          - php
+        state: latest
+      when: ansible_distribution == "Amazon"
+
+    - name: install apache and php for ubuntu
+      apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+        state: latest
+      when: ansible_distribution == "Ubuntu"
