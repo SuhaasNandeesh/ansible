@@ -4,21 +4,24 @@
   become: true
   tasks:
     - name: check updates for amazon linux
+      tags: always
       dnf:
         update_cache: yes
         update_only: yes
       when: ansible_distribution == "Amazon"
 
     - name: check updates for ubuntu
+      tags: always
       apt:
         update_cache: yes
-        update_only: yes
+        upgrade: dist
       when: ansible_distribution == "Ubuntu"
     
 - hosts: web_server
   become: true
   tasks:
     - name: install apache and php for amazon linux
+      tags: amazon,apache,httpd,php
       yum:
         name:
           - httpd
@@ -27,6 +30,7 @@
       when: ansible_distribution == "Amazon"
 
     - name: install apache and php for ubuntu
+      tags: ubuntu,apache,apache2,libapache2-mod-php
       apt:
         name:
           - apache2
